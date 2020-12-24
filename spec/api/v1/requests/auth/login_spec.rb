@@ -17,7 +17,6 @@ RSpec.describe 'Login', type: :request do
         login_credentials[:email] = 'abc@wer.com'
         json = login_user(login_credentials)
 
-
         expect(response).to have_http_status(401)
         expect(json['errors']).to include('Invalid login credentials. Please try again.')
       end
