@@ -6,3 +6,8 @@ def login_user(user)
   }
   JSON.parse(response.body)
 end
+
+def generate_headers(user = nil)
+  user = create :user if user.nil?
+  user.create_new_auth_token
+end
