@@ -26,5 +26,10 @@ RSpec.describe User, type: :model do
 
       scenario { should be_valid }
     end
+
+    context 'Associations' do
+      scenario { should have_many(:appointments) }
+      scenario { should have_many(:gym_sessions).through(:appointments) }
+    end
   end
 end

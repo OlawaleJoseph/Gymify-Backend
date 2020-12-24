@@ -1,5 +1,3 @@
-require 'faker'
-
 FactoryBot.define do
   factory :gym_session do
     title { 'Six Packs workout' }

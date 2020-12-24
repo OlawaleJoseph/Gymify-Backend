@@ -1,6 +1,9 @@
 class User < ActiveRecord::Base
   extend Devise::Models
 
+  has_many :appointments, foreign_key: 'attendee_id'
+  has_many :gym_sessions, through: :appointments
+
   validates :first_name, presence: true, length: { minimum: 3, maximum: 50 }
   validates :last_name, presence: true, length: { minimum: 3, maximum: 50 }
   validates :email, presence: true, uniqueness: { case_sensitive: false }

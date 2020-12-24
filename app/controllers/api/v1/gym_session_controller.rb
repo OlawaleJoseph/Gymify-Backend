@@ -26,5 +26,4 @@ class Api::V1::GymSessionController < ApplicationController
     end
     render json: { errors: messages }, status: 422
   end
-
 end

@@ -1,4 +1,7 @@
 class GymSession < ApplicationRecord
+  has_many :appointments
+  has_many :attendees, through: :appointments
+
   validates :title, presence: true, length: { minimum: 3, maximum: 50 }
   validates :description, presence: true, length: { minimum: 3, maximum: 5000 }
   validates :duration, presence: true, numericality: { only_integer: true, greater_than: 299, less_than: 7200 }
