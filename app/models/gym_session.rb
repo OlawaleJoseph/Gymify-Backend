@@ -9,7 +9,7 @@ class GymSession < ApplicationRecord
 
   def validate_start_time
     return if start_time.nil?
-    p [start_time, Time.now, start_time - Time.now]
+
     return if (start_time - Time.now) >= 600
 
     errors.add(:start_time, 'start time should be at least 10 minutes before now')

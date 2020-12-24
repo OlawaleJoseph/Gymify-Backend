@@ -13,9 +13,10 @@
 ActiveRecord::Schema.define(version: 2020_12_23_165917) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "gym_sessions", force: :cascade do |t|
+  create_table "gym_sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
     t.text "description", null: false
     t.datetime "start_time", null: false
@@ -24,7 +25,7 @@ ActiveRecord::Schema.define(version: 2020_12_23_165917) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
     t.string "encrypted_password", default: "", null: false
