@@ -30,6 +30,7 @@ RSpec.describe User, type: :model do
     context 'Associations' do
       scenario { should have_many(:appointments) }
       scenario { should have_many(:gym_sessions).through(:appointments) }
+      scenario { should have_many(:notifications) }
     end
   end
 end

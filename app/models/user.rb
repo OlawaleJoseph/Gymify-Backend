@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
 
   has_many :appointments, foreign_key: 'attendee_id'
   has_many :gym_sessions, through: :appointments
+  has_many :notifications, foreign_key: 'receiver_id'
 
   validates :first_name, presence: true, length: { minimum: 3, maximum: 50 }
   validates :last_name, presence: true, length: { minimum: 3, maximum: 50 }
