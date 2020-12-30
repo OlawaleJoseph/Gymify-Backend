@@ -29,6 +29,4 @@ FactoryBot.define do
     receiver factory: :user
     is_read { false }
   end
-
-  
 end

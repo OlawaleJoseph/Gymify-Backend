@@ -30,7 +30,7 @@ RSpec.describe User, type: :model do
     context 'Trainer' do
       subject do
         trainer = build :user
-        trainer.is_trainer = true 
+        trainer.is_trainer = true
         trainer.info = 'Trainer Info'
         trainer.speciality = "Trainer's speciality"
         trainer

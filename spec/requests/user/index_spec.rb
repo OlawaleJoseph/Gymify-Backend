@@ -26,26 +26,26 @@ RSpec.describe 'Api::V1::User', type: :request do
     context 'Valid Header' do
       before do
         User.create({
-          email: 'testonly@email.com',
-          first_name: 'John',
-          last_name: 'Doe',
-          username: 'john_doe',
-          password: 'Password1',
-          is_trainer: true,
-          speciality: 'Squats',
-          info: '5 years experience as a professional trainer'
-        })
-    
+                      email: 'testonly@email.com',
+                      first_name: 'John',
+                      last_name: 'Doe',
+                      username: 'john_doe',
+                      password: 'Password1',
+                      is_trainer: true,
+                      speciality: 'Squats',
+                      info: '5 years experience as a professional trainer'
+                    })
+
         User.create({
-          email: 'testonly2@email.com',
-          first_name: 'John',
-          last_name: 'Doe',
-          username: 'john_doe2',
-          password: 'Password1',
-          is_trainer: true,
-          speciality: 'Squats',
-          info: '5 years experience as a professional trainer'
-        })
+                      email: 'testonly2@email.com',
+                      first_name: 'John',
+                      last_name: 'Doe',
+                      username: 'john_doe2',
+                      password: 'Password1',
+                      is_trainer: true,
+                      speciality: 'Squats',
+                      info: '5 years experience as a professional trainer'
+                    })
       end
       it 'should return all trainers with required keys' do
         get url, headers: headers
