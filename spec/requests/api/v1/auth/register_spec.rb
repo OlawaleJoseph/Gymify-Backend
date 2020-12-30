@@ -156,6 +156,5 @@ RSpec.describe 'SignUp', type: :request do
       expect(json['errors']).to be_nil
       expect(json['data']['is_trainer']).to be true
     end
-
   end
 end
