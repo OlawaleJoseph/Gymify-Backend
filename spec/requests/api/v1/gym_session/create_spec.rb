@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::GymSessions', type: :request do
-  subject { build :gym_session }
-
   context 'New Gym Session' do
     params = nil
     let(:no_headers_url) { post api_v1_classes_path, params: params, as: :json }
@@ -17,7 +15,7 @@ RSpec.describe 'Api::V1::GymSessions', type: :request do
       }
     end
 
-    context 'Check if user is logged in' do
+    context 'Authentication' do
       it 'return 401 if token is not in headers' do
         no_headers_url
         expect(response.status).to eq(401)
@@ -34,7 +32,32 @@ RSpec.describe 'Api::V1::GymSessions', type: :request do
       end
     end
 
+    context 'Authorization' do
+      it 'should return 403 for non trainers' do
+        post_request(url, params, headers)
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eq(403)
+        expect(json['success']).to be false
+        expect(json['errors']).to include('You are not authorized to perform this operation')
+      end
+    end
+
     context 'Validations' do
+      let(:trainer) do
+        User.create({
+                      email: 'testonly@email.com',
+                      first_name: 'John',
+                      last_name: 'Doe',
+                      username: 'john_doe',
+                      password: 'Password1',
+                      is_trainer: true,
+                      speciality: 'Squats',
+                      info: '5 years experience as a professional trainer'
+                    })
+      end
+      let(:headers) { generate_headers(trainer) }
+
       it 'should validate presence of title' do
         params[:title] = ''
         post_request(url, params, headers)

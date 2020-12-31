@@ -12,12 +12,24 @@ FactoryBot.define do
     username { Faker::Name.unique.name }
   end
 
+  factory :trainer, class: 'User' do
+    email { Faker::Internet.email }
+    first_name { Faker::Name.unique.name }
+    last_name { Faker::Name.unique.name }
+    password { 'Password1' }
+    username { Faker::Name.unique.name }
+    is_trainer { true }
+    speciality { 'Squats' }
+    info { '5 years experience as a professional trainer' }
+  end
+
   factory :appointment do
     attendee_id { 1 }
     gym_session_id { 1 }
   end
 
   factory :gym_session do
+    association :instructor, factory: :trainer
     title { 'Six Packs workout' }
     description { 'Description' }
     start_time { Time.now + 1000 }

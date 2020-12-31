@@ -1,6 +1,7 @@
 class GymSession < ApplicationRecord
   has_many :appointments
   has_many :attendees, through: :appointments
+  belongs_to :instructor, class_name: 'User'
 
   validates :title, presence: true, length: { minimum: 3, maximum: 50 }
   validates :description, presence: true, length: { minimum: 3, maximum: 5000 }

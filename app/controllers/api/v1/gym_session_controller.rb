@@ -1,6 +1,7 @@
 class Api::V1::GymSessionController < ApplicationController
-  before_action :authenticate_api_v1_user!
+  before_action :authenticate_api_v1_user!, :authorize_trainer
   rescue_from ActiveRecord::RecordInvalid, with: :handle_gym_session_validation
+
   def create
     gym_class = GymSession.create!(gym_session_params)
 
@@ -25,5 +26,16 @@ class Api::V1::GymSessionController < ApplicationController
       messages[key] = err.record.errors[key] unless messages[key]
     end
     render json: { errors: messages }, status: 422
+  end
+
+  def authorize_trainer
+    return if current_api_v1_user.is_trainer
+
+    errors = {
+      success: false,
+      errors: ['You are not authorized to perform this operation']
+    }
+
+    render json: errors, status: 403
   end
 end
