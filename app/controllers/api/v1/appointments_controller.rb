@@ -3,6 +3,12 @@ class Api::V1::AppointmentsController < ApplicationController
   rescue_from ActiveRecord::RecordInvalid, with: :handle_validation
   rescue_from ActiveRecord::RecordNotFound, with: :not_found_handler
 
+  def index
+    appointments = Appointment.includes(:gym_session, :attendee).where(attendee_id: current_api_v1_user.id)
+
+    render_success(appointments, 200)
+  end
+
   def create
     gym_session_id = if appointment_params['gym_session_id'].nil?
                        GymSession.create!(
@@ -28,8 +34,6 @@ class Api::V1::AppointmentsController < ApplicationController
   end
 
   def show; end
-
-  def index; end
 
   def not_found_handler
     errors = {

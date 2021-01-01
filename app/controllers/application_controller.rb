@@ -14,4 +14,8 @@ class ApplicationController < ActionController::API
     end
     render json: { errors: messages }, status: 422
   end
+
+  def render_success(obj, status = 200)
+    render json: obj, status: status
+  end
 end
