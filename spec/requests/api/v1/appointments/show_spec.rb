@@ -5,13 +5,14 @@ RSpec.describe 'Get Appointment', type: :request do
   url = nil
   headers = nil
   gym_session = nil
+  created_appointment = nil
 
   before do
     user = create :user
-    url = api_v1_appointments_path(user.id)
     gym_session = create :gym_session
     headers = generate_headers(user)
-    create :appointment, gym_session_id: gym_session.id, attendee_id: user.id
+    created_appointment = create :appointment, gym_session_id: gym_session.id, attendee_id: user.id
+    url = api_v1_appointment_path(created_appointment.id)
   end
 
   context 'Authenticate User' do
@@ -34,17 +35,25 @@ RSpec.describe 'Get Appointment', type: :request do
     end
   end
 
-  context 'Get all apointments' do
-    it 'should successfully return all apointments' do
+  context 'Get single apointments' do
+    it 'should return 404 if apointment does not exist' do
+      get api_v1_appointment_path(1000), headers: headers
+
+      body = JSON.parse(response.body)
+
+      expect(response.status). to eq(404)
+      expect(body['errors']).to be_truthy
+      expect(body['errors']).to include('Appointment does not exist')
+    end
+    it 'should successfully return apointment' do
       get url, headers: headers
 
       body = JSON.parse(response.body)
 
       expect(response.status). to eq(200)
-      expect(body). to be_instance_of Array
-      body.each do |appointment|
-        expect(appointment['attendee']['id']).to eq(user.id)
-      end
+      expect(body). to be_instance_of Hash
+      expect(body['attendee']['id']).to eq(user.id)
+      expect(body.keys).to include('id', 'attendee', 'gym_session')
     end
   end
 end

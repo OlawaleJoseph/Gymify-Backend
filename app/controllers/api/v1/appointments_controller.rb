@@ -33,7 +33,12 @@ class Api::V1::AppointmentsController < ApplicationController
     render json: appointment, status: :created
   end
 
-  def show; end
+  def show
+    appointment = Appointment.includes(:gym_session, :attendee).where!(id: params['id'], attendee_id: current_api_v1_user.id).first
+    return render json: { errors: ['Appointment does not exist'] }, status: 404 if appointment.nil?
+
+    render_success(appointment)
+  end
 
   def not_found_handler
     errors = {

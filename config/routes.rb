@@ -4,9 +4,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       mount_devise_token_auth_for 'User', at: 'auth', defaults: { format: :json }
       resources :classes, controller: 'gym_session', defaults: { format: :json }
-      resources :users, only: [:show] do
-        resources :appointments
-      end
+      resources :users, only: [:show]
+      resources :appointments
       get 'trainers', to: 'users#index'
     end
   end
