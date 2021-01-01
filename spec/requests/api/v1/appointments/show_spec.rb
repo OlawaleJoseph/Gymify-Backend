@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Get Appointment', type: :request do
+RSpec.describe 'Get Single Appointment', type: :request do
   user = nil
   url = nil
   headers = nil

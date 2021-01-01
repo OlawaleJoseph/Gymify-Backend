@@ -4,7 +4,7 @@ RSpec.describe 'Api::V1::Appointment', type: :request do
   context 'New Appointment' do
     let(:user) { create :user }
     let(:headers) { generate_headers(user) }
-    let(:url) { api_v1_user_appointments_path(user.id) }
+    let(:url) { api_v1_appointments_path(user.id) }
     let(:gym_session) { create :gym_session }
     let(:no_headers_url) { post url, params: { gym_session_id: 1 }, as: :json }
 
