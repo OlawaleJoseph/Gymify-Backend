@@ -1,57 +1,182 @@
-# require 'rails_helper'
+require 'rails_helper'
 
-# RSpec.describe 'Api::V1::GymSessions', type: :request do
-#   subject { build :gym_session }
+RSpec.describe 'Api::V1::Appointment', type: :request do
+  context 'New Appointment' do
+    let(:user) { create :user }
+    let(:headers) { generate_headers(user) }
+    let(:url) { api_v1_user_appointments_path(user.id) }
+    let(:gym_session) { create :gym_session }
+    let(:no_headers_url) { post url, params: { gym_session_id: 1 }, as: :json }
 
-#   context 'New Gym Session' do
-#     params = nil
-#     let(:headers) { generate_headers }
-#     let(:user) { create :user }
-#     let(:url) { api_v1_user_appointments_path(user.id) }
-#     let(:gym_session) { create :gym_session }
-#     let(:no_headers_url) { post url, params: { gym_session_id: 1 }, as: :json }
+    context 'Authenticate User' do
+      it 'return 401 if token is not in headers' do
+        no_headers_url
+        expect(response.status).to eq(401)
+      end
 
-#     context 'Check if user is logged in' do
-#       it 'return 401 if token is not in headers' do
-#         no_headers_url
-#         expect(response.status).to eq(401)
-#       end
+      it 'return 401 if uid is not in headers' do
+        no_headers_url
+        expect(response.status).to eq(401)
+      end
 
-#       it 'return 401 if uid is not in headers' do
-#         no_headers_url
-#         expect(response.status).to eq(401)
-#       end
+      it 'return 401 if client is not in headers' do
+        no_headers_url
+        expect(response.status).to eq(401)
+      end
+    end
 
-#       it 'return 401 if client is not in headers' do
-#         no_headers_url
-#         expect(response.status).to eq(401)
-#       end
-#     end
+    context 'Validations' do
+      context 'Non Private appointment' do
+        it 'return 404 if gym_session does not exist' do
+          post url, headers: headers, params: { gym_session_id: 1 }
+          body = JSON.parse(response.body)
+          expect(response.status).to eq(404)
+          expect(body['error']).to be_truthy
+          expect(body['error']).to eq('Gym session does not exist')
+        end
 
-#     context 'Validations' do
-#       it 'return 422 if no gym_session id is provided' do
-#         post url, headers: headers, params: { gym_session_id: nil }
-#         body = JSON.parse(response.body)
-#         expect(response.status).to eq(422)
-#         expect(body['errors']).to include('gym_session')
-#         expect(body['errors']['gym_session']).to include("can't be blank")
-#       end
+        it 'return 201 if gym_session exist' do
+          post url, headers: headers, params: { gym_session_id: gym_session.id }
+          body = JSON.parse(response.body)
 
-#       it 'return 404 if gym_session does not exist' do
-#         post url, headers: headers, params: { gym_session_id: 1000 }
-#         body = JSON.parse(response.body)
-#         expect(response.status).to eq(404)
-#         expect(body['errors']).to include('gym_session')
-#         expect(body['errors']['gym_session']).to include('not found')
-#       end
+          expect(response.status).to eq(201)
+          expect(body['errors']).to be nil
+          expect(body.keys).to include('gym_session', 'id', 'attendee')
+        end
+      end
 
-#       it 'return 200 if class/gym_session exist' do
-#         post url, headers: headers, params: { gym_session_id: gym_session.id }
-#         body = JSON.parse(response.body)
-#         expect(response.status).to eq(200)
-#         expect(body['errors']).not_to include('gym_session')
-#         # expect(body['errors']['gym_session']).to include("can't be blank")
-#       end
-#     end
-#   end
-# end
+      context 'Private Appointment' do
+        let(:trainer) { create :trainer }
+        let(:params) do
+          {
+            title: 'Six Packs workout',
+            description: 'Description',
+            start_time: Time.now + 1000,
+            duration: 60 * 5,
+            instructor_id: trainer.id
+          }
+        end
+
+        it 'should validate presence of title' do
+          params[:title] = ''
+          post_request(url, params, headers)
+          json = JSON.parse(response.body)
+
+          expect(response.status).to eql(422)
+          expect(json['errors']).to have_key('title')
+          expect(json['errors']['title']).to include("can't be blank")
+        end
+
+        it 'title should have minimum of 3 characters' do
+          params[:title] = 'wq'
+          post_request(url, params, headers)
+          json = JSON.parse(response.body)
+
+          expect(response.status).to eql(422)
+          expect(json['errors']).to have_key('title')
+          expect(json['errors']['title']).to include('is too short (minimum is 3 characters)')
+        end
+
+        it 'title should have maximum of 50 characters' do
+          params[:title] = 'T' * 51
+          post_request(url, params, headers)
+          json = JSON.parse(response.body)
+
+          expect(response.status).to eql(422)
+          expect(json['errors']).to have_key('title')
+          expect(json['errors']['title']).to include('is too long (maximum is 50 characters)')
+        end
+
+        it 'should validate presence of description' do
+          params[:description] = ''
+          post_request(url, params, headers)
+          json = JSON.parse(response.body)
+
+          expect(response.status).to eql(422)
+          expect(json['errors']).to have_key('description')
+          expect(json['errors']['description']).to include("can't be blank")
+        end
+
+        it 'description should have minimum of 3 characters' do
+          params[:description] = 'wq'
+          post_request(url, params, headers)
+          json = JSON.parse(response.body)
+
+          expect(response.status).to eql(422)
+          expect(json['errors']).to have_key('description')
+          expect(json['errors']['description']).to include('is too short (minimum is 3 characters)')
+        end
+
+        it 'description should have maximum of 5000 characters' do
+          params[:description] = 'T' * 5001
+          post_request(url, params, headers)
+          json = JSON.parse(response.body)
+
+          expect(response.status).to eql(422)
+          expect(json['errors']).to have_key('description')
+          expect(json['errors']['description']).to include('is too long (maximum is 5000 characters)')
+        end
+
+        it 'should validate presence of duration' do
+          params[:duration] = nil
+          post_request(url, params, headers)
+          json = JSON.parse(response.body)
+
+          expect(response.status).to eql(422)
+          expect(json['errors']).to have_key('duration')
+          expect(json['errors']['duration']).to include("can't be blank")
+        end
+
+        it 'duration must be an integer' do
+          params[:duration] = 'a'
+          post_request(url, params, headers)
+          json = JSON.parse(response.body)
+
+          expect(response.status).to eql(422)
+          expect(json['errors']).to have_key('duration')
+          expect(json['errors']['duration']).to include('is not a number')
+        end
+
+        it 'duration should be at least 5 minutes, measured in seconds' do
+          params[:duration] = 60 * 4
+          post_request(url, params, headers)
+          json = JSON.parse(response.body)
+
+          expect(response.status).to eql(422)
+          expect(json['errors']).to have_key('duration')
+          expect(json['errors']['duration']).to include('must be greater than 299')
+        end
+
+        it 'duration should be at most 2 hours, measured in seconds' do
+          params[:duration] = 60 * 60 * 3
+          post_request(url, params, headers)
+          json = JSON.parse(response.body)
+
+          expect(response.status).to eql(422)
+          expect(json['errors']).to have_key('duration')
+          expect(json['errors']['duration']).to include('must be less than 7200')
+        end
+
+        it 'should validate presence of start_time' do
+          params[:start_time] = nil
+          post_request(url, params, headers)
+          json = JSON.parse(response.body)
+
+          expect(response.status).to eql(422)
+          expect(json['errors']).to have_key('start_time')
+          expect(json['errors']['start_time']).to include("can't be blank")
+        end
+
+        it 'start_time should be 10 minutes ahead of creation time' do
+          params[:start_time] = Time.now
+          post_request(url, params, headers)
+          json = JSON.parse(response.body)
+
+          expect(response.status).to eql(422)
+          expect(json['errors']).to have_key('start_time')
+          expect(json['errors']['start_time']).to include('start time should be at least 10 minutes before now')
+        end
+      end
+    end
+  end
+end

@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 2020_12_30_212357) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_private"
-    t.integer "instructor_id"
+    t.uuid "instructor_id"
     t.index ["instructor_id"], name: "index_gym_sessions_on_instructor_id"
   end
 
