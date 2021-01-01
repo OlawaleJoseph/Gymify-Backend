@@ -12,4 +12,8 @@ describe 'Appointment Routes', type: :routing do
   it 'should route api_v1_user_appointment to api/v1/appointments#show' do
     should route(:get, api_v1_appointment_path(1)).to('api/v1/appointments#show', id: 1)
   end
+
+  it 'should route api_v1_user_appointment to api/v1/appointments#update' do
+    should route(:patch, api_v1_appointment_path(1)).to('api/v1/appointments#update', id: 1)
+  end
 end

@@ -34,11 +34,33 @@ class Api::V1::AppointmentsController < ApplicationController
   end
 
   def show
-    appointment = Appointment.includes(:gym_session, :attendee).where!(id: params['id'], attendee_id: current_api_v1_user.id).first
-    return render json: { errors: ['Appointment does not exist'] }, status: 404 if appointment.nil?
+    appointment = Appointment.includes(:gym_session, :attendee).where(id: params['id'], attendee_id: current_api_v1_user.id).first
+    return appointment_not_found if appointment.nil?
 
     render_success(appointment)
   end
+
+  def update
+    appointment = Appointment.includes({ gym_session: :instructor }, :attendee).where(id: params['id']).first
+    return appointment_not_found if appointment.nil?
+
+    gym_session = appointment.gym_session
+    return unauthorised unless gym_session.instructor_id == current_api_v1_user.id
+
+    # Check if already updated
+    return render json: { errors: ['You can not perform this operation'] }, status: 422 unless appointment.created_at == appointment.updated_at
+
+    if update_params['accept_appointment'].to_s.downcase == 'true'
+      updated_appointment = Appointment.update(params['id'], confirmed: true)
+      Appointment.create!(gym_session_id: gym_session.id, attendee_id: current_api_v1_user.id)
+      return render_success(updated_appointment)
+    end
+    appointment.destroy
+    gym_session.destroy
+    render status: 204
+  end
+
+  private
 
   def not_found_handler
     errors = {
@@ -48,13 +70,23 @@ class Api::V1::AppointmentsController < ApplicationController
     render json: errors, status: 404
   end
 
-  private
-
   def gym_session_params
     params.permit(:title, :description, :start_time, :duration, :is_private, :instructor_id)
   end
 
   def appointment_params
     params.permit(:gym_session_id, :instructor_id)
+  end
+
+  def appointment_not_found
+    render json: { errors: ['Appointment does not exist'] }, status: 404
+  end
+
+  def unauthorised
+    render json: { errors: ['You are not allowed to perform this operation'] }, status: 403
+  end
+
+  def update_params
+    params.permit(:accept_appointment, :id)
   end
 end

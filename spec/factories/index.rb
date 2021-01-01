@@ -26,6 +26,7 @@ FactoryBot.define do
   factory :appointment do
     attendee_id { 1 }
     gym_session_id { 1 }
+    confirmed { false }
   end
 
   factory :gym_session do
