@@ -1,0 +1,19 @@
+---
+development:
+  cloud_name: wales
+  api_key: '624481182594394'
+  api_secret: 6TXy_-D4Cl8czLYivQcZc1EYSkk
+  enhance_image_tag: true
+  static_file_support: false
+production:
+  cloud_name: wales
+  api_key: '624481182594394'
+  api_secret: 6TXy_-D4Cl8czLYivQcZc1EYSkk
+  enhance_image_tag: true
+  static_file_support: true
+test:
+  cloud_name: wales
+  api_key: '624481182594394'
+  api_secret: 6TXy_-D4Cl8czLYivQcZc1EYSkk
+  enhance_image_tag: true
+  static_file_support: false

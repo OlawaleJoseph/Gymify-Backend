@@ -1,5 +1,5 @@
 class Api::V1::AppointmentsController < ApplicationController
-  before_action :authenticate_api_v1_user!
+  before_action :authenticate_api_v1_user!, :img
   rescue_from ActiveRecord::RecordInvalid, with: :handle_validation
   rescue_from ActiveRecord::RecordNotFound, with: :not_found_handler
 
