@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  default_url_options :host => "localhost"
+  default_url_options :host => "https://gymify-backend.herokuapp.com/"
 
   namespace :api do
     namespace :v1 do
