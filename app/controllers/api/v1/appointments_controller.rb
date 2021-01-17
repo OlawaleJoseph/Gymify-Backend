@@ -1,5 +1,6 @@
 class Api::V1::AppointmentsController < ApplicationController
-  before_action :authenticate_api_v1_user!, :img
+  before_action :authenticate_api_v1_user!
+  before_action :set_time, only: [:create]
   rescue_from ActiveRecord::RecordInvalid, with: :handle_validation
   rescue_from ActiveRecord::RecordNotFound, with: :not_found_handler
 
@@ -15,7 +16,7 @@ class Api::V1::AppointmentsController < ApplicationController
                          {
                            title: gym_session_params['title'],
                            description: gym_session_params['description'],
-                           start_time: gym_session_params['start_time'],
+                           start_time: @session_time,
                            duration: gym_session_params['duration'],
                            is_private: gym_session_params['is_private'],
                            instructor_id: gym_session_params['instructor_id']
@@ -47,7 +48,6 @@ class Api::V1::AppointmentsController < ApplicationController
     gym_session = appointment.gym_session
     return unauthorised unless gym_session.instructor_id == current_api_v1_user.id
 
-    # Check if already updated
     return render json: { errors: ['You can not perform this operation'] }, status: 422 unless appointment.created_at == appointment.updated_at
 
     if update_params['accept_appointment'].to_s.downcase == 'true'
@@ -71,7 +71,7 @@ class Api::V1::AppointmentsController < ApplicationController
   end
 
   def gym_session_params
-    params.permit(:title, :description, :start_time, :duration, :is_private, :instructor_id)
+    params.permit(:title, :description, :start_time, :duration, :is_private, :instructor_id, :time_zone)
   end
 
   def appointment_params
@@ -88,5 +88,9 @@ class Api::V1::AppointmentsController < ApplicationController
 
   def update_params
     params.permit(:accept_appointment, :id)
+  end
+
+  def set_time
+    @session_time = set_time_with_time_zone(gym_session_params[:start_time], gym_session_params[:time_zone])
   end
 end

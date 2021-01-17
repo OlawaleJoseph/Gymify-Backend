@@ -7,8 +7,15 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def show
+    render json: current_api_v1_user, status: :ok
+  end
+
+  def trainer
     user = User.includes(:appointments, :gym_sessions).find(params[:id])
-    render json: user, status: :ok
+    p user
+    return render_error('You are not permitted', 403) unless user.is_trainer
+
+    render_success(user)
   end
 
   private

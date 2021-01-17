@@ -15,8 +15,6 @@ class User < ActiveRecord::Base
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :username, presence: true, length: { minimum: 3, maximum: 50 },
                        uniqueness: { case_sensitive: false }
-  validates :password, presence: true, length: { minimum: 8, maximum: 50 },
-                       format: { with: /\A(?=.*\d)(?=.*[a-z])(?=.*[A-Z])([\x20-\x7E]){8,50}\Z/ }
   validates :speciality, presence: true, length: { minimum: 3, maximum: 50 }, if: :is_trainer
   validates :info, presence: true, length: { minimum: 3, maximum: 10_000 }, if: :is_trainer
   validates :image, presence: true
@@ -29,5 +27,6 @@ class User < ActiveRecord::Base
 
   def set_img_url
     self.img_url = url_for(image)
+    # self.appointments = appointments
   end
 end

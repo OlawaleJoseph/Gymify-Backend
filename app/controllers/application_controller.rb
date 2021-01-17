@@ -20,7 +20,15 @@ class ApplicationController < ActionController::API
     render json: { error: 'An Error occured' }, status: 500
   end
 
+  def render_error(error, status)
+    render json: { error: error }, status: status
+  end
+
   def render_success(obj, status = 200)
     render json: obj, status: status
+  end
+
+  def set_time_with_time_zone(time, time_zone)
+    ActiveSupport::TimeZone[time_zone].parse(time)
   end
 end

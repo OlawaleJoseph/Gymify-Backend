@@ -28,7 +28,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'rack-cors'
 
 # Authentication
-gem 'devise_token_auth'
+gem 'devise_token_auth', '~> 1.1.4'
 
 # Model Serializer
 gem 'active_model_serializers', '~> 0.10.0'
