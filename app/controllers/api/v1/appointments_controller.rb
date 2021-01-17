@@ -91,6 +91,6 @@ class Api::V1::AppointmentsController < ApplicationController
   end
 
   def set_time
-    @session_time = set_time_with_time_zone(gym_session_params[:start_time], gym_session_params[:time_zone])
+    @session_time = set_time_with_time_zone(gym_session_params[:time_zone], gym_session_params[:start_time])
   end
 end

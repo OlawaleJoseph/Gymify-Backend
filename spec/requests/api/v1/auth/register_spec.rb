@@ -7,7 +7,8 @@ RSpec.describe 'SignUp', type: :request do
       username: 'janedoe',
       email: 'jane@example.com',
       password: 'Password1',
-      confirm_password: 'Password1' }
+      confirm_password: 'Password1',
+      image: Rack::Test::UploadedFile.new(File.open(File.join(Rails.root, 'spec/images/bubbles.jpg')), 'image/jpeg') }
   end
   let(:trainer_parameters) do
     {
@@ -19,7 +20,8 @@ RSpec.describe 'SignUp', type: :request do
       confirm_password: 'Password1',
       is_trainer: true,
       speciality: 'Squats',
-      info: '5 years experirnce as a professional trainer'
+      info: '5 years experirnce as a professional trainer',
+      image: Rack::Test::UploadedFile.new(File.open(File.join(Rails.root, 'spec/images/bubbles.jpg')), 'image/jpeg')
     }
   end
   context 'User#Validations' do

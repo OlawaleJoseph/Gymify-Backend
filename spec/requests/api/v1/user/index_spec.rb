@@ -33,7 +33,8 @@ RSpec.describe 'Api::V1::User', type: :request do
                       password: 'Password1',
                       is_trainer: true,
                       speciality: 'Squats',
-                      info: '5 years experience as a professional trainer'
+                      info: '5 years experience as a professional trainer',
+                      image: Rack::Test::UploadedFile.new(File.open(File.join(Rails.root, 'spec/images/bubbles.jpg')), 'image/jpeg')
                     })
 
         User.create({
@@ -44,7 +45,8 @@ RSpec.describe 'Api::V1::User', type: :request do
                       password: 'Password1',
                       is_trainer: true,
                       speciality: 'Squats',
-                      info: '5 years experience as a professional trainer'
+                      info: '5 years experience as a professional trainer',
+                      image: Rack::Test::UploadedFile.new(File.open(File.join(Rails.root, 'spec/images/bubbles.jpg')), 'image/jpeg')
                     })
       end
       it 'should return all trainers with required keys' do

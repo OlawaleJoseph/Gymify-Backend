@@ -21,8 +21,6 @@ RSpec.describe User, type: :model do
 
       scenario { should validate_presence_of(:password) }
       scenario { should allow_value('Password1$').for(:password) }
-      scenario { should validate_length_of(:password).is_at_least(8) }
-      scenario { should validate_length_of(:password).is_at_most(50) }
 
       scenario { should be_valid }
     end

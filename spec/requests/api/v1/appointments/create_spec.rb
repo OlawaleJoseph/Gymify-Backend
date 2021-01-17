@@ -7,6 +7,7 @@ RSpec.describe 'Api::V1::Appointment', type: :request do
     let(:url) { api_v1_appointments_path(user.id) }
     let(:gym_session) { create :gym_session }
     let(:no_headers_url) { post url, params: { gym_session_id: 1 }, as: :json }
+    let(:non_private_params) { { gym_session_id: gym_session.id, time_zone: 'Africa/Lagos' } }
 
     context 'Authenticate User' do
       it 'return 401 if token is not in headers' do
@@ -26,26 +27,6 @@ RSpec.describe 'Api::V1::Appointment', type: :request do
     end
 
     context 'Validations' do
-      context 'Non Private appointment' do
-        it 'return 404 if gym_session does not exist' do
-          post url, headers: headers, params: { gym_session_id: 1 }
-          body = JSON.parse(response.body)
-          expect(response.status).to eq(404)
-          expect(body['error']).to be_truthy
-          expect(body['error']).to eq('Gym session does not exist')
-        end
-
-        it 'return 201 if gym_session exist' do
-          post url, headers: headers, params: { gym_session_id: gym_session.id }
-          body = JSON.parse(response.body)
-
-          expect(response.status).to eq(201)
-          expect(body['errors']).to be nil
-          expect(body.keys).to include('gym_session', 'id', 'attendee')
-        end
-      end
-
-      context 'Private Appointment' do
         let(:trainer) { create :trainer }
         let(:params) do
           {
@@ -53,7 +34,8 @@ RSpec.describe 'Api::V1::Appointment', type: :request do
             description: 'Description',
             start_time: Time.now + 1000,
             duration: 60 * 5,
-            instructor_id: trainer.id
+            instructor_id: trainer.id,
+            time_zone: 'Africa/Lagos'
           }
         end
 
@@ -158,7 +140,7 @@ RSpec.describe 'Api::V1::Appointment', type: :request do
         end
 
         it 'should validate presence of start_time' do
-          params[:start_time] = nil
+          params[:start_time] = ''
           post_request(url, params, headers)
           json = JSON.parse(response.body)
 
@@ -178,5 +160,4 @@ RSpec.describe 'Api::V1::Appointment', type: :request do
         end
       end
     end
-  end
 end

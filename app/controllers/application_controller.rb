@@ -28,7 +28,7 @@ class ApplicationController < ActionController::API
     render json: obj, status: status
   end
 
-  def set_time_with_time_zone(time, time_zone)
+  def set_time_with_time_zone(time_zone, time = '')
     ActiveSupport::TimeZone[time_zone].parse(time)
   end
 end

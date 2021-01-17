@@ -53,7 +53,8 @@ RSpec.describe 'Api::V1::GymSessions', type: :request do
                       password: 'Password1',
                       is_trainer: true,
                       speciality: 'Squats',
-                      info: '5 years experience as a professional trainer'
+                      info: '5 years experience as a professional trainer',
+                      image: Rack::Test::UploadedFile.new(File.open(File.join(Rails.root, 'spec/images/bubbles.jpg')), 'image/jpeg')
                     })
       end
       let(:headers) { generate_headers(trainer) }
