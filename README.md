@@ -56,6 +56,9 @@ Clone [this](https://github.com/OlawaleJoseph/E-Vote-Backend.git) repository
 ### Run tests
   - run `rpsec`
 
+***NOTE***
+I had a medical issue that hindered me from working on the project, this is the reason for the late submission of this project. I sent a mail to to student success to notify them that I will require additional time for the completion of the project, which was granted.
+
 ## Author
 
 👤 **Adedeko Olawale**
