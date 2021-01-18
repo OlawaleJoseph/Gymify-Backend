@@ -9,10 +9,35 @@ There are a couple of endpoints exposed by this api and can be accessed online u
 ## POST
 
 - /auth - (create user account)
+  <div>
+    <img src="./user.png" width="500px">
+  </div>
+  <br>
+  <br>
+  <br>
 - /auth/sign_in - (log in to account)
+  <div>
+    <img src="./login.png" width="500px">
+  </div>
+  <br>
+  <br>
+  <br>
+
 - /appointments - (create appointment)
+  <div>
+    <img src="./appointment.png" width="500px">
+  </div>
+  <br>
+  <br>
+  <br>
 
 ## GET
+  <div>
+    <img src="./headers.png" width="500px">
+  </div>
+  <br>
+  <br>
+  <br>
 
 - /me - (fetch user info)
 - /trainers - (fetch all trainers)
