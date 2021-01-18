@@ -91,6 +91,8 @@ class Api::V1::AppointmentsController < ApplicationController
   end
 
   def set_time
+    return render json: { success: false, error: 'Time zone is required' } if gym_session_params['time_zone'].nil?
+
     @session_time = set_time_with_time_zone(gym_session_params[:time_zone], gym_session_params[:start_time])
   end
 end
