@@ -5,7 +5,9 @@ class GymSession < ApplicationRecord
 
   validates :title, presence: true, length: { minimum: 3, maximum: 50 }
   validates :description, presence: true, length: { minimum: 3, maximum: 5000 }
-  validates :duration, presence: true, numericality: { only_integer: true, greater_than: 299, less_than: 7200 }
+  validates :duration, presence: true, numericality: { only_integer: true }
+  validates :duration, numericality: { greater_than: 299, message: 'Duration should be at least five minutes' }
+  validates :duration, numericality: { less_than: 7200, message: 'Duration should not be above 2 hours' }
   validates :start_time, presence: true
 
   validate :validate_start_time
